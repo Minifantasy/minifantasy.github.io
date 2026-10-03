@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minifantasy</title>
+<meta name="description" content="Minifantasy is the largest top-down fantasy asset collection at 8x8 resolution, by Krishna Palacio. A new asset pack every month since April 2020.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f1ea; --panel: #fffdf8; --ink: #23201c; --muted: #6d665c; --line: #ddd6c8;
+  --accent: #c8452f; --accent-ink: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17151a; --panel: #201d24; --ink: #efe9df; --muted: #9d958a; --line: #37323d;
+    --accent: #ff6b52; --accent-ink: #17151a;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 Inter, system-ui, sans-serif; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 56px 16px 64px; }
+h1 { font-family: Silkscreen, monospace; font-weight: 400; font-size: clamp(34px, 8vw, 60px); margin: 0 0 8px; letter-spacing: 1px; }
+.lead { font-size: 19px; margin: 0 0 24px; }
+p { margin: 0 0 16px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 28px 0; padding: 0; list-style: none; }
+.facts li { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; color: var(--muted); font-size: 14px; }
+.facts b { display: block; font-family: Silkscreen, monospace; font-weight: 400; font-size: 20px; color: var(--ink); }
+.links { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0; }
+.btn { display: inline-block; padding: 11px 18px; border-radius: 6px; border: 2px solid var(--accent); color: var(--accent); font-weight: 600; text-decoration: none; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn:hover { filter: brightness(1.08); }
+footer { color: var(--muted); font-size: 13px; margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Minifantasy</h1>
+  <p class="lead">The largest top-down fantasy asset collection at 8x8 resolution.</p>
+  <p>Released in April 2020, Minifantasy has grown by a new asset pack every month since: tilesets for dungeons, caves, deserts, swamps and towns, fully animated characters and monsters, crafting, spells, mounts, icons, UI and much more. Every set is modular, so packs combine freely with each other.</p>
+
+  <ul class="facts">
+    <li><b>70+</b>main asset packs</li>
+    <li><b>10,000s</b>of tiles</li>
+    <li><b>1,000s</b>of props</li>
+    <li><b>100s</b>of creatures</li>
+  </ul>
+
+  <div class="links">
+    <a class="btn primary" href="/asset-index/">Search the asset index</a>
+    <a class="btn" href="https://krishna-palacio.itch.io/">Packs on itch.io</a>
+    <a class="btn" href="https://www.patreon.com/krishna_palacio">Patreon</a>
+  </div>
+
+  <p>A new pack comes out every month. Follow Krishna Palacio on itch.io to hear about new releases, or join the Patreon for monthly packs and exclusive sprites.</p>
+
+  <footer>© 2020–2026 Minifantasy. Minifantasy is an original idea by <a href="https://krishna-palacio.itch.io/">Krishna Palacio</a>.</footer>
+</div>
+</body>
+</html>

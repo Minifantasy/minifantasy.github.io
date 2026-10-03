@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minifantasy Asset Index</title>
+<meta name="description" content="Searchable index of every Minifantasy asset: tilesets, props, creatures, icons and more, with the pack each one comes from.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f1ea; --panel: #fffdf8; --ink: #23201c; --muted: #6d665c; --line: #ddd6c8;
+  --stripe: #f7f3ea; --hover: #ffe3d6; --accent: #c8452f; --accent-ink: #fff;
+  --itch: #d6453d; --unity: #3a3a3a; --patreon: #e0703a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17151a; --panel: #201d24; --ink: #efe9df; --muted: #9d958a; --line: #37323d;
+    --stripe: #25212a; --hover: #4a2a27; --accent: #ff6b52; --accent-ink: #17151a;
+    --itch: #ff6b61; --unity: #cfcfcf; --patreon: #ff9a63;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 Inter, system-ui, sans-serif; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-family: Silkscreen, monospace; font-weight: 400; font-size: clamp(26px, 5vw, 40px); margin: 0 0 4px; letter-spacing: 1px; }
+.sub { color: var(--muted); margin: 0 0 16px; }
+.notice { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); padding: 10px 14px; margin: 0 0 20px; font-size: 14px; }
+.notice a, footer a { color: var(--accent); }
+.controls { position: sticky; top: 0; z-index: 2; background: var(--bg); padding: 10px 0 12px; display: grid; gap: 10px; }
+input[type=search] { width: 100%; padding: 12px 14px; font: inherit; font-size: 16px; color: var(--ink); background: var(--panel); border: 2px solid var(--line); border-radius: 6px; outline: none; }
+input[type=search]:focus { border-color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+.chip[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.chip .n { opacity: .65; margin-left: 4px; }
+.status { color: var(--muted); font-size: 13px; }
+table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); }
+th { text-align: left; font-family: Silkscreen, monospace; font-weight: 400; font-size: 13px; padding: 10px; border-bottom: 2px solid var(--line); cursor: pointer; user-select: none; white-space: nowrap; }
+th[aria-sort=ascending]::after { content: " ▲"; }
+th[aria-sort=descending]::after { content: " ▼"; }
+td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tbody tr:nth-child(even) { background: var(--stripe); }
+tbody tr:hover { background: var(--hover); }
+td.name a { color: var(--ink); font-weight: 600; text-decoration: none; }
+td.name a:hover { text-decoration: underline; }
+.tags { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.store { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 6px; margin: 0 4px 2px 0; border-radius: 3px; border: 1px solid currentColor; }
+.store.itch { color: var(--itch); } .store.unity { color: var(--unity); } .store.patreon { color: var(--patreon); }
+.more { display: block; margin: 16px auto 0; }
+footer { color: var(--muted); font-size: 13px; margin-top: 32px; }
+@media (max-width: 640px) {
+  thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tr { padding: 8px 4px; border-bottom: 1px solid var(--line); }
+  td { border: 0; padding: 2px 8px; }
+  td.type::before { content: "Type: "; color: var(--muted); }
+  td.pack::before { content: "Pack: "; color: var(--muted); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Minifantasy Asset Index</h1>
+  <p class="sub">Every tile, prop, creature and icon in <a href="https://krishna-palacio.itch.io/" style="color:inherit">Minifantasy</a>, and which pack it lives in.</p>
+
+  <div class="controls">
+    <input type="search" id="q" placeholder="Search names, packs, types and tags. Try &quot;tree fruit&quot; or &quot;skeleton&quot;" autocomplete="off" autofocus>
+    <div class="chips" id="types" aria-label="Filter by type"></div>
+    <div class="chips" id="stores" aria-label="Filter by store"></div>
+    <div class="status" id="status">Loading the index…</div>
+  </div>
+
+  <table>
+    <thead><tr>
+      <th data-key="name">Name</th>
+      <th data-key="type">Type</th>
+      <th data-key="pack">Pack</th>
+      <th data-key="storeKey">Store</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <button class="chip more" id="more" hidden>Show more</button>
+
+  <footer>
+    <a href="/">Minifantasy home</a> · Original interactive index by Daniel Mecke. Links go to the pack's store page or Patreon post.
+  </footer>
+</div>
+
+<script>
+const SHEET = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtDDaI5kVRkOUWqJb8GRksylMr-wsKKbKB6O4XQ1rhVs5weqq_7NZPltfsniDND5C17kFatv2mUtyp/pub?gid=0&single=true&output=tsv';
+const BACKUP = 'data.tsv';
+const PAGE = 200;
+const STORES = [['itch', 'itch.io'], ['unity', 'Unity'], ['patreon', 'Patreon']];
+
+const $ = id => document.getElementById(id);
+let assets = [], shown = PAGE, sortKey = 'name', sortDir = 1, sourceNote = '';
+const activeTypes = new Set(), activeStores = new Set();
+
+function parse(tsv) {
+  return tsv.split(/\r?\n/).slice(1).map(l => l.split('\t')).filter(c => c[0] && c[0].trim()).map(c => {
+    const stores = STORES.map(s => s[0]).filter((s, i) => (c[4 + i] || '').trim() === 'yes');
+    const patreonOnly = stores.length === 1 && stores[0] === 'patreon';
+    return {
+      name: c[0].trim(),
+      type: (c[1] || '').trim(),
+      pack: patreonOnly ? (c[3] || '').trim() || 'Patreon Exclusive' : (c[2] || '').trim(),
+      patreonPack: (c[3] || '').trim(),
+      stores, storeKey: stores.join(' '),
+      link: (c[7] || '').trim(),
+      tags: (c[8] || '').split(',').map(t => t.trim()).filter(Boolean),
+    };
+  });
+}
+
+async function load() {
+  for (const [url, label] of [[SHEET, 'live'], [BACKUP, 'backup']]) {
+    try {
+      const r = await fetch(url, { cache: 'no-cache' });
+      if (!r.ok) continue;
+      const data = parse(await r.text());
+      if (data.length) return [data, label];
+    } catch (e) {}
+  }
+  return [[], 'none'];
+}
+
+function chip(label, count, set, value) {
+  const b = document.createElement('button');
+  b.className = 'chip';
+  b.setAttribute('aria-pressed', 'false');
+  b.innerHTML = `${label}<span class="n">${count}</span>`;
+  b.onclick = () => {
+    set.has(value) ? set.delete(value) : set.add(value);
+    b.setAttribute('aria-pressed', set.has(value));
+    shown = PAGE; render();
+  };
+  return b;
+}
+
+function buildFilters() {
+  const typeCounts = {};
+  assets.forEach(a => { if (a.type) typeCounts[a.type] = (typeCounts[a.type] || 0) + 1; });
+  Object.entries(typeCounts).sort((a, b) => b[1] - a[1])
+    .forEach(([t, n]) => $('types').append(chip(t, n, activeTypes, t)));
+  STORES.forEach(([k, label]) =>
+    $('stores').append(chip(label, assets.filter(a => a.stores.includes(k)).length, activeStores, k)));
+}
+
+function matches(a, words) {
+  if (activeTypes.size && !activeTypes.has(a.type)) return false;
+  if (activeStores.size && !a.stores.some(s => activeStores.has(s))) return false;
+  const hay = [a.name, a.type, a.pack, a.patreonPack, ...a.tags].join(' ').toLowerCase();
+  return words.every(w => hay.includes(w));
+}
+
+const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+
+function render() {
+  const words = $('q').value.toLowerCase().split(/\s+/).filter(Boolean);
+  const list = assets.filter(a => matches(a, words))
+    .sort((a, b) => a[sortKey].localeCompare(b[sortKey], undefined, { sensitivity: 'base' }) * sortDir || a.name.localeCompare(b.name));
+  $('rows').innerHTML = list.slice(0, shown).map(a => `<tr>
+    <td class="name"><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.name)}</a>${a.tags.length ? `<div class="tags">${esc(a.tags.join(', '))}</div>` : ''}</td>
+    <td class="type">${esc(a.type)}</td>
+    <td class="pack">${esc(a.pack)}</td>
+    <td>${a.stores.map(s => `<span class="store ${s}">${STORES.find(x => x[0] === s)[1]}</span>`).join('')}</td>
+  </tr>`).join('');
+  $('more').hidden = list.length <= shown;
+  $('more').textContent = `Show more (${list.length - shown} left)`;
+  $('status').textContent = `${list.length} of ${assets.length} assets${sourceNote}`;
+  document.querySelectorAll('th').forEach(th =>
+    th.setAttribute('aria-sort', th.dataset.key === sortKey ? (sortDir > 0 ? 'ascending' : 'descending') : 'none'));
+}
+
+document.querySelectorAll('th').forEach(th => th.onclick = () => {
+  sortDir = sortKey === th.dataset.key ? -sortDir : 1;
+  sortKey = th.dataset.key; render();
+});
+$('q').oninput = () => { shown = PAGE; render(); };
+$('more').onclick = () => { shown += PAGE; render(); };
+
+load().then(([data, source]) => {
+  assets = data;
+  if (!assets.length) { $('status').textContent = 'Could not load the index right now. Try again in a minute.'; return; }
+  if (source === 'backup') sourceNote = ' (from saved copy)';
+  buildFilters();
+  render();
+});
+</script>
+</body>
+</html>
